@@ -47,7 +47,10 @@ def find_ticket(ticket_id):
 
 def sort_by_priority(tickets):
     """Return tickets with the most urgent first: High, then Medium, then Low."""
-    return sorted(tickets, key=lambda t: t["priority"])
+    return sorted(
+    tickets,
+    key=lambda t: {"High": 1, "Medium": 2, "Low": 3}[t["priority"]]
+    )
 
 
 # ---------- API ----------
@@ -73,7 +76,7 @@ def create_ticket():
     category = data.get("category", "Other")
     priority = data.get("priority", "Medium")
 
-    if title is None:
+    if not isinstance(title, str) or not title.strip():
         return jsonify({"error": "Title is required"}), 400
     if category not in CATEGORIES:
         return jsonify({"error": "Unknown category"}), 400
@@ -111,7 +114,7 @@ def change_status(ticket_id):
 STATUS_LABELS = {
     "Open": "Open",
     "In Progress": "In Progress",
-    "Resolved": "Open",
+    "Resolved": "Resolved",
     "Closed": "Closed",
 }
 
